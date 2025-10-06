@@ -3,10 +3,10 @@ import './Carousel.scss';
 
 interface Props {
   images: string[];
-  step: number;
-  frameSize: number;
-  itemWidth: number;
-  animationDuration: number;
+  step?: number;
+  frameSize?: number;
+  itemWidth?: number;
+  animationDuration?: number;
   infinite?: boolean;
 }
 
@@ -17,10 +17,11 @@ interface CarouselState {
 
 const Carousel = ({
   images,
-  step,
-  frameSize,
+  step = 3,
+  frameSize = 3,
   itemWidth = 130,
-  animationDuration,
+  animationDuration = 1000,
+  infinite = false,
 }: Props) => {
   const [carouselState, setCarouselState] = useState<CarouselState>({
     currentPosition: 0,
@@ -35,54 +36,79 @@ const Carousel = ({
     return <div className="Carousel">Invalid caurosel configuration</div>;
   }
 
-  const canMoveNext = carouselState.currentElement + step < images.length;
-  const canMovePrev = carouselState.currentElement - step >= 0;
+  const maxStart = Math.max(0, images.length - frameSize);
+  const canMoveNext = infinite || carouselState.currentElement < maxStart;
+  const canMovePrev = infinite || carouselState.currentElement > 0;
 
   const handleNext = () => {
-    if (!canMoveNext) {
-      return;
-    }
+    if (infinite) {
+      const nextIndex =
+        carouselState.currentElement >= maxStart
+          ? 0
+          : Math.min(carouselState.currentElement + step, maxStart);
 
-    setCarouselState({
-      currentElement: carouselState.currentElement + step,
-      currentPosition: carouselState.currentPosition - step * itemWidth,
-    });
+      setCarouselState({
+        currentElement: nextIndex,
+        currentPosition: -nextIndex * itemWidth,
+      });
+    } else {
+      if (!canMoveNext) {
+        return;
+      }
+
+      const nextIndex = Math.min(carouselState.currentElement + step, maxStart);
+
+      setCarouselState({
+        currentElement: nextIndex,
+        currentPosition: -nextIndex * itemWidth,
+      });
+    }
   };
 
   const handlePrev = () => {
-    if (!canMovePrev) {
-      return;
-    }
+    if (infinite) {
+      const prevIndex =
+        carouselState.currentElement <= 0
+          ? maxStart
+          : Math.max(carouselState.currentElement - step, 0);
 
-    setCarouselState({
-      currentElement: carouselState.currentElement - step,
-      currentPosition: carouselState.currentPosition + step * itemWidth,
-    });
+      setCarouselState({
+        currentElement: prevIndex,
+        currentPosition: -prevIndex * itemWidth,
+      });
+    } else {
+      if (!canMovePrev) {
+        return;
+      }
+
+      const prevIndex = Math.max(carouselState.currentElement - step, 0);
+
+      setCarouselState({
+        currentElement: prevIndex,
+        currentPosition: -prevIndex * itemWidth,
+      });
+    }
   };
 
+  const carouselStyle = {
+    '--item-width': `${itemWidth}px`,
+    '--animation-duration': `${animationDuration}ms`,
+  } as React.CSSProperties;
+
   return (
-    <div className="Carousel">
+    <div className="Carousel" style={carouselStyle}>
       <ul
         className="Carousel__list"
         style={{
-          width: frameSize * itemWidth,
           transform: `translateX(${carouselState.currentPosition}px)`,
-          transition: `all ${animationDuration}ms ease-in`,
         }}
       >
         {images &&
           images.map((item, index) => {
             return (
-              <li
-                key={item}
-                className="Carousel__item"
-                style={{ width: itemWidth }}
-              >
-                <img
-                  src={`${item}`}
-                  alt={`${index + 1}`}
-                  width={`${itemWidth}`}
-                />
+              <li key={item} className="Carousel__item">
+                <img src={item} alt={`${index + 1}`} width={itemWidth} />
+                <p>is item {index + 1}</p>
               </li>
             );
           })}

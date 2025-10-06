@@ -9,12 +9,19 @@
 
 .Carousel__list{
   display: flex;
+  flex-wrap: nowrap;
   margin: 0 auto;
   padding: 0;
+  transition: transform var(--animation-duration, 1000ms) ease;
 
   li {
     list-style: none;
   }
+}
+
+.Carousel__item {
+  flex: 0 0 var(--item-width, 130px);
+  width: var(--item-width, 130px);
 }
 
 
