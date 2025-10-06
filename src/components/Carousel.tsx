@@ -33,7 +33,7 @@ const Carousel = ({
   }
 
   if (frameSize <= 0 || step <= 0 || itemWidth <= 0) {
-    return <div className="Carousel">Invalid caurosel configuration</div>;
+    return <div className="Carousel">Invalid carousel configuration</div>;
   }
 
   const maxStart = Math.max(0, images.length - frameSize);
@@ -93,26 +93,29 @@ const Carousel = ({
   const carouselStyle = {
     '--item-width': `${itemWidth}px`,
     '--animation-duration': `${animationDuration}ms`,
+    '--frame-size': frameSize,
   } as React.CSSProperties;
 
   return (
     <div className="Carousel" style={carouselStyle}>
-      <ul
-        className="Carousel__list"
-        style={{
-          transform: `translateX(${carouselState.currentPosition}px)`,
-        }}
-      >
-        {images &&
-          images.map((item, index) => {
-            return (
-              <li key={item} className="Carousel__item">
-                <img src={item} alt={`${index + 1}`} width={itemWidth} />
-                <p>is item {index + 1}</p>
-              </li>
-            );
-          })}
-      </ul>
+      <div className="Carousel__viewport">
+        <ul
+          className="Carousel__list"
+          style={{
+            transform: `translateX(${carouselState.currentPosition}px)`,
+          }}
+        >
+          {images &&
+            images.map((item, index) => {
+              return (
+                <li key={`${index}-${item}`} className="Carousel__item">
+                  <img src={item} alt={`${index + 1}`} width={itemWidth} />
+                  <p>is item {index + 1}</p>
+                </li>
+              );
+            })}
+        </ul>
+      </div>
 
       <div className="Carousel__btns">
         <button

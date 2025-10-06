@@ -25,7 +25,7 @@ interface HandleInputsForm {
 const App = () => {
   useEffect(() => {
     document.title = 'Carousel';
-  });
+  }, []);
 
   const [inputsForm, setInputsForm] = useState<HandleInputsForm>({
     step: 3,
@@ -43,56 +43,69 @@ const App = () => {
         <div className="Myform__input">
           <label htmlFor="itemId">Item Width</label>
           <input
+            type="number"
+            min="1"
+            step="1"
             id="itemId"
             placeholder="ItemWidth"
             value={inputsForm.itemWidth}
             onChange={e => {
-              setInputsForm({
-                ...inputsForm,
+              setInputsForm(prev => ({
+                ...prev,
                 itemWidth: Number(e.target.value),
-              });
+              }));
             }}
           />
         </div>
         <div className="Myform__input">
           <label htmlFor="stepId">Step</label>
           <input
+            type="number"
+            min="1"
+            step="1"
             id="stepId"
             placeholder="Step"
             value={inputsForm.step}
             onChange={e => {
-              setInputsForm({
-                ...inputsForm,
+              setInputsForm(prev => ({
+                ...prev,
                 step: Number(e.target.value),
-              });
+              }));
             }}
           />
         </div>
         <div className="Myform__input">
           <label htmlFor="animationID">animationDuration</label>
           <input
+            type="number"
+            min="100"
+            step="100"
             id="animationID"
             placeholder="animationDuration"
             value={inputsForm.animationDuration}
             onChange={e => {
-              setInputsForm({
-                ...inputsForm,
+              setInputsForm(prev => ({
+                ...prev,
                 animationDuration: Number(e.target.value),
-              });
+              }));
             }}
           />
         </div>
         <div className="Myform__input">
           <label htmlFor="frameId">frameSize</label>
           <input
+            type="number"
+            min="1"
+            max="10"
+            step="1"
             id="frameId"
             placeholder="frameSize"
             value={inputsForm.frameSize}
             onChange={e => {
-              setInputsForm({
-                ...inputsForm,
+              setInputsForm(prev => ({
+                ...prev,
                 frameSize: Number(e.target.value),
-              });
+              }));
             }}
           />
         </div>
